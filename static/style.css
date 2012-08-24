@@ -1,0 +1,132 @@
+
+body{
+/*    background-color: #e5e5e5;*/
+    font-family: "Serif Bold", Times, Arial;
+    font-size: large;
+}
+
+a:link,a:visited {text-decoration:none;text-shadow:#111111 2px 2px 1px;color:#FFFFFF;}
+a:hover {color:#CCCCCC;}  /* mouse over link */
+a:active {text-shadow:#111111 0px 0px 1px;}  /* selected link */
+
+header{
+    background-color: #157fc9;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100px;
+}
+
+#div-bar{
+    background-image: url('images/bar.png');
+    background-repeat:repeat-x;
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    height: 5px;
+
+/*    border: 1px solid black;*/
+}
+
+#logo{
+/*    border: 1px solid black;*/
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+#div-nav{
+/*    border: 1px solid black;*/
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    text-align: right;
+    font-size: 20px;
+}
+
+#div-nav ul
+{
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+#div-nav li
+{
+    margin-left: 20px;
+    display: inline;
+}
+
+#content{
+/*    position: absolute;*/
+/*    top: 120px;*/
+/*    bottom: 20px;*/
+/*    left: 20px;*/
+/*    right: 20px;*/
+    width: 800px;
+    margin: 110px auto 20px ;
+    padding: 10px;
+    
+/*    border: 1px solid black;*/
+    
+}
+
+.no-margin{
+    margin: 0px;
+}
+
+.shadow {
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    /*IE 7 AND 8 DO NOT SUPPORT BORDER RADIUS*/
+    -moz-box-shadow: 0px 0px 5px 3px #727678;
+    -webkit-box-shadow: 0px 0px 5px 3px #727678;
+    box-shadow: 0px 0px 5px 3px #727678;
+    /*IE 7 AND 8 DO NOT SUPPORT BLUR PROPERTY OF SHADOWS*/
+    /*IE 7 AND 8 DO NOT SUPPORT SPREAD PROPERTY OF SHADOWS*/
+}
+
+.side-left{
+    float: left;
+}
+
+.side-right{
+    float: right;
+}
+
+#div-loginform{
+    padding: 5px 10px 5px;
+    border: 1px solid black;
+    display: table;
+    margin: auto;
+}
+
+.error{
+    background-color: #F888A5;
+    border: 2px dotted red;
+    padding-left: 10px;
+}
+
+.error-text{
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+footer{
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    /*IE 7 AND 8 DO NOT SUPPORT BORDER RADIUS*/
+    -moz-box-shadow: 0px 0px 5px 3px #727678;
+    -webkit-box-shadow: 0px 0px 5px 3px #727678;
+    box-shadow: 0px 0px 5px 3px #727678;
+    /*IE 7 AND 8 DO NOT SUPPORT BLUR PROPERTY OF SHADOWS*/
+    /*IE 7 AND 8 DO NOT SUPPORT SPREAD PROPERTY OF SHADOWS*/
+    margin-top: 30px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    height: 50px;
+}

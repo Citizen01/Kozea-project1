@@ -1,0 +1,29 @@
+<!--index.htmljinja2-->
+
+{% extends "layout.htmljinja2" %}
+{% block title %} - Un hébergement pour tous vos fichiers{% endblock %}
+{% block content %}
+
+    <center>
+        <h1 class="no-margin">Kozupload</h1>
+        <h3 class="no-margin">Un hébergement pour tous vos fichiers!</h3>
+    </center>
+
+    <div class="presentation" >
+        <image class="side-right" src="static/images/upload_logo.png" width="140" height="140" alt="upload-logo" />
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac augue et odio viverra volutpat. Nullam libero neque, vehicula sit amet lacinia sit amet, dignissim ut lorem. Ut sodales metus vitae nibh laoreet eu blandit purus viverra. Maecenas feugiat augue a neque facilisis vitae luctus enim lacinia. Suspendisse potenti. Sed sed mauris ac velit volutpat scelerisque. Curabitur vitae erat orci, et tempor purus. Quisque id nisi a dui iaculis hendrerit. In et nibh ligula, ut aliquam erat.</p>
+        
+    </div>
+
+    <div class="presentation" >
+        <image class="side-left" src="static/images/servers_logo.png" width="140" height="140" alt="servers-logo" />
+        <p>Maecenas ut mi massa, quis pharetra lacus. Aenean suscipit nibh nec eros auctor malesuada. Aliquam vehicula magna vitae dui tincidunt mollis. Quisque ut fermentum orci. Sed vel urna neque, non tempor eros. Proin et purus leo. Donec aliquet cursus rhoncus. Quisque mattis, enim nec fermentum aliquam, orci turpis molestie lacus, et semper leo purus id dui. Duis sed lorem in eros volutpat suscipit. Nulla vitae orci neque. Sed eget mauris nec turpis elementum iaculis. Donec tincidunt dictum felis, a euismod risus ultricies et. Vestibulum ornare fermentum tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi quis euismod felis.</p>
+        
+    </div>
+
+    <div class="presentation" >
+        <image class="side-right" src="static/images/help_logo.png" width="140" height="140" alt="help-logo" />
+        <p>Morbi consectetur, mi vitae pellentesque facilisis, velit risus iaculis ante, at elementum tortor arcu vel orci. Ut sagittis mollis ullamcorper. Donec sodales gravida augue a vestibulum. Pellentesque ac dui sapien, non facilisis mauris. Proin arcu justo, vestibulum fermentum iaculis et, fringilla eu nisl. Ut sit amet est mauris. Donec commodo molestie risus, at pulvinar tellus fringilla pellentesque. Integer sit amet consequat massa. Phasellus dignissim ante et leo interdum aliquet. Morbi ullamcorper turpis vel justo posuere pellentesque.</p>
+    </div>
+
+{% endblock %}

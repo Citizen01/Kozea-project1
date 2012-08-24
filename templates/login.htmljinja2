@@ -1,0 +1,26 @@
+<!--login.htmljinja2-->
+
+{% extends "layout.htmljinja2" %}
+{% block title %} - Login{% endblock %}
+{% block content %}
+
+    <center>
+        <h3>Member login</h3>
+    </center>
+
+    <div id="div-loginform" class="shadow" >
+        {% if error %}
+            <div id="div-loginerror" class="error" >{{ error }}</div>
+        {% endif %}
+        <form action="{{ url_for( 'show_login' ) }}" method="POST" >
+            <dl>
+              <dt>Username:</dt>
+              <dd><input type='text' name='username'><dd>
+              <dt>Password:</dt>
+              <dd><input type='password' name='password'><dd>
+              <dd><input type='submit' value='Login'><dd>
+            </dl>
+        </form>        
+    </div>
+
+{% endblock %}
