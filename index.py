@@ -39,6 +39,11 @@ def do_logout():
     flash('You were successfully logged out')
     return redirect(url_for('show_index'))
 
+@app.route('/register')
+def show_register():
+    return render_template('register.htmljinja2')
+
+
 @app.route("/my_files")
 def show_files():
     return render_template("my_files.htmljinja2")
