@@ -2,35 +2,22 @@
 
 {% extends "layout.htmljinja2" %}
 {% block title %} - My Files{% endblock %}
-{% block content %}
 
+{% block content %}
+  <section>
     <h2>My files</h2>
 
-    <section id="files-box" class="shadow" >
-
-        <a href="#" >
-            <div class="delete gradient" ><image src="static/images/delete.png" width="30" height="30" alt="del"/></div>
-        </a>
-        <a href="#" >
-            <div class="file gradient" >
-                <div class="file-title" >
-                    <h4>desktop.rar</h4>
-                </div>
-
-            </div>
-        </a>
-
-        <a href="#" >
-            <div class="delete gradient" ><image src="static/images/delete.png" width="30" height="30" alt="del"/></div>
-        </a>
-        <a href="#" >
-            <div class="file gradient" >
-                <div class="file-title" >
-                    <h4>troll.png</h4>
-                </div>
-            </div>
-        </a>
-
-    </section>
-
+    <table>
+      <thead>
+        <th>Filename</th>
+        <th>Size</th>
+        <th>Actions</th>
+      </thead>
+      <tr>
+        <th>troll.png</th>
+        <td>1</td>
+        <td><a href="#" >Delete</a></td>
+      </tr>
+    </table>
+  </section>
 {% endblock %}
