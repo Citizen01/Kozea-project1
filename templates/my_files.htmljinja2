@@ -3,29 +3,34 @@
 {% extends "layout.htmljinja2" %}
 {% block title %} - My Files{% endblock %}
 {% block content %}
-    
-    {% if not session.logged_in %}
-        <center>
-            <div class="error"><p class="error-text">You have to sign in first !</p></div>
-            <h3>Member login</h3>
-        </center>
 
-        <div id="div-loginform" class="shadow" >
-            <div id="div-loginerror" class="error" ></div>
-            <form action="{{ url_for( 'show_login' ) }}" method="POST" >
-                <dl>
-                  <dt>Username:</dt>
-                  <dd><input type='text' name='username'><dd>
-                  <dt>Password:</dt>
-                  <dd><input type='password' name='password'><dd>
-                  <dd><input type='submit' value='Login'><dd>
-                </dl>
-            </form>        
-        </div>
-    {% else %}
-        <center>
-            <h3>My files</h3>
-        </center>
-    {% endif %}
+    <h2>My files</h2>
+
+    <section id="files-box" class="shadow" >
+
+        <a href="#" >
+            <div class="delete gradient" ><image src="static/images/delete.png" width="30" height="30" alt="del"/></div>
+        </a>
+        <a href="#" >
+            <div class="file gradient" >
+                <div class="file-title" >
+                    <h4>desktop.rar</h4>
+                </div>
+
+            </div>
+        </a>
+
+        <a href="#" >
+            <div class="delete gradient" ><image src="static/images/delete.png" width="30" height="30" alt="del"/></div>
+        </a>
+        <a href="#" >
+            <div class="file gradient" >
+                <div class="file-title" >
+                    <h4>troll.png</h4>
+                </div>
+            </div>
+        </a>
+
+    </section>
 
 {% endblock %}

@@ -26,7 +26,7 @@ header{
 
 header h1{
     margin: 0px;
-    padding: 25px;
+    padding: 22px;
     font-size: 50px;
     height: 50px;
     display: inline-block;
@@ -69,9 +69,9 @@ header h1{
     width: 800px;
     margin: 110px auto 20px ;
     padding: 10px;
-    
+
 /*    border: 1px solid black;*/
-    
+
 }
 
 .no-margin{
@@ -102,16 +102,121 @@ header h1{
     margin: auto;
 }
 
+#div-registerform{
+    padding: 5px 10px 5px;
+    border: 1px solid black;
+    display: table;
+    margin: auto;
+}
+
+#div-accountform{
+    padding: 5px 10px 5px;
+    border: 1px solid black;
+    display: table;
+    margin: auto;
+}
+
 .error{
     background-color: #F888A5;
     border: 2px dotted red;
-    padding-left: 10px;
+    padding: 4px 10px
 }
 
-.error-text{
-    margin-top: 4px;
-    margin-bottom: 4px;
+.success{
+    background-color: #0BE29F;
+    border: 2px dotted green;
+    padding: 4px 10px
 }
+
+.br{
+    margin-bottom: 20px;
+}
+
+input[type="submit"]{
+    display: table;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#files-box{
+    padding: 10px;
+}
+
+.gradient{
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    -moz-box-shadow: 0px 0px 1px 1px #000000;
+    -webkit-box-shadow: 0px 0px 1px 1px #000000;
+    box-shadow: 0px 0px 1px 1px #000000;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#dedede');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#dedede')";
+    background-image: -moz-linear-gradient(top, #ffffff, #dedede);
+    background-image: -ms-linear-gradient(top, #ffffff, #dedede);
+    background-image: -o-linear-gradient(top, #ffffff, #dedede);
+    background-image: -webkit-gradient(linear, center top, center bottom, from(#ffffff), to(#dedede));
+    background-image: -webkit-linear-gradient(top, #ffffff, #dedede);
+    background-image: linear-gradient(top, #ffffff, #dedede);
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+
+.file:active, .delete:active{
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dedede', endColorstr = '#ffffff');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dedede', endColorstr = '#ffffff')";
+    background-image: -moz-linear-gradient(top, #dedede, #ffffff);
+    background-image: -ms-linear-gradient(top, #dedede, #ffffff);
+    background-image: -o-linear-gradient(top, #dedede, #ffffff);
+    background-image: -webkit-gradient(linear, center top, center bottom, from(#dedede), to(#ffffff));
+    background-image: -webkit-linear-gradient(top, #dedede, #ffffff);
+    background-image: linear-gradient(top, #dedede, #ffffff);
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+
+}
+
+.file{
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px;
+    height: 30px;
+    font-family: "Serif Bold", Verdana, sans-serif;
+    font-size: normal;
+}
+
+.delete{
+    position: static;
+    padding-top: 10px;
+    margin: 0px;
+    width: 50px;
+    height: 40px;
+    display: block;
+    float: right;
+    text-align: center;
+}
+
+h2{
+    text-align: center;
+
+}
+
+.file .file-title h4{
+    margin: 0px;
+}
+
+.file-title{
+    position: relative;
+    top: 15%;
+    height: 25px;
+    font-size: large;
+    display: inline-block;
+}
+
+.file-title a:link, a:visited {text-decoration:none;color: black;}
+
+
 
 footer{
     -moz-border-radius: 6px;
