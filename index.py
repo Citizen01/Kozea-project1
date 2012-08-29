@@ -3,17 +3,27 @@ from flask import (Flask, request, session, g, redirect, url_for, abort,
                    render_template, flash)
 from flask.ext.sqlalchemy import SQLAlchemy
 from functools import wraps
+import os
+from werkzeug import secure_filename
+from datetime import datetime
+from sqlalchemy.orm import deferred, relationship, backref, column_property
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql import func
 
 # configuration
 DEBUG = True
 SECRET_KEY = 'development key'
 DB_URL = "postgresql://kozupload@localhost/kozupload"
+UPLOAD_FOLDER = './uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_ECHO'] = True
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024
 db = SQLAlchemy(app)
 
 
@@ -37,13 +47,16 @@ class File(db.Model):
     title = db.Column(db.String(120))
     type = db.Column(db.String(80))
     pub_date = db.Column(db.DateTime)
+    data = deferred(db.Column(db.LargeBinary))
 
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    owner = db.relationship(User, backref='files')
+    owner = db.relationship("User", backref=backref('files',
+                                                    order_by=pub_date))
 
-    def __init__(self, title, type, pub_date=None):
+    def __init__(self, title, type, ownerid, pub_date=None ):
         self.title = title
         self.type = type
+        self.owner_id = ownerid
         if pub_date is None:
             pub_date = datetime.utcnow()
         self.pub_date = pub_date
@@ -51,6 +64,13 @@ class File(db.Model):
     def __repr__(self):
         return '<Post %r>' % self.title
 
+    @hybrid_property
+    def size(self):
+        return size_to_human(len(self.data))
+
+    @size.expression
+    def size(self):
+        return func.pg_size_pretty(func.octet_length(self.data))
 
 @app.route("/")
 def show_index():
@@ -68,6 +88,7 @@ def show_login():
         else:
             session['logged_in'] = True
             session['username'] = form_username
+            session['id'] = member.id
             flash('You were logged in')
             return redirect(url_for('show_files'))
 
@@ -132,11 +153,62 @@ def add_member(username, password):
 @app.route("/my_files")
 @need_auth
 def show_files():
-    if not ('logged_in' in session):
-        return render_template('login.htmljinja2',
-                               error="You have to login first !")
+    user = User.query.filter_by(username=session['username']).first()
+    db.session.add(user)
+    files = user.files
 
-    return render_template("my_files.htmljinja2")
+    if True:
+        return render_template("my_files.htmljinja2", files=files)
+    else:
+        return render_template("my_files.htmljinja2")
+
+
+def size_to_human(size, unit=1024, round=True):
+    unit_name = 'bytes'
+    size = int(size)
+    if size > unit:
+        size = size / float(unit)
+        unit_name = 'KB'
+    if size > unit:
+        size = size / float(unit)
+        unit_name = 'MB'
+    if size > unit:
+        size = size / float(unit)
+        unit_name = 'GB'
+    size = str(size)
+    if round:
+        if len(size) > 4:
+            size = "%d" % float(size)
+    return size + ' ' + unit_name
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def show_upload():
+    error = None
+    if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            if allowed_file(file.filename):
+                dbfile = File(file.filename, file.mimetype, session['id'])
+                dbfile.data = file.read()
+                db.session.add(dbfile)
+                db.session.commit()
+                return redirect(url_for('show_files'))
+            else:
+                error = "Invalid file type !"
+                return render_template('upload.htmljinja2', error=error)
+
+    return render_template('upload.htmljinja2')
+
+
+@app.route("/download")
+def download_file():
+        return render_template("download.htmljinja2")
 
 
 @app.route('/my_account', methods=['GET', 'POST'])

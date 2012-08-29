@@ -11,13 +11,17 @@
       <thead>
         <th>Filename</th>
         <th>Size</th>
+        <th>Date</th>
         <th>Actions</th>
       </thead>
-      <tr>
-        <th>troll.png</th>
-        <td>1</td>
-        <td><a href="#" >Delete</a></td>
-      </tr>
+      {% for file in files %}
+        <tr>
+          <th>{{ file.title }}</th>
+          <td>{{ file.size }}</td>
+          <td>{{ file.pub_date }}</td>
+          <td><a href="{{url_for('download_file')}}" >Download</a>  <a href="" >Delete</a></td>
+        </tr>
+      {% endfor %}
     </table>
   </section>
 {% endblock %}

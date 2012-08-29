@@ -16,13 +16,14 @@
                 <a href="{{ url_for('show_index') }}" ><h1>Kozupload</h1></a>
 <!--            <image id="logo" src="static/images/logo.png" width="230" height="55" alt="Kozupload-logo" />-->
             </div>
-            
+
             <nav id="div-nav">
                 <ul>
                     {% if not session.logged_in %}
                         <li><a href="{{ url_for('show_register') }}" >Register</a></li>
                         <li><a href="{{ url_for('show_login') }}" >Sign In</a></li>
                     {% else %}
+                        <li><a href="{{ url_for('show_upload') }}" >Upload</a></li>
                         <li><a href="{{ url_for('show_files') }}" >My files</a></li>
                         <li><a href="{{ url_for('show_account') }}" >My account</a></li>
                         <li><a href="{{ url_for('do_logout') }}" >Logout</a></li>
@@ -33,7 +34,7 @@
             <div id="content">
                 {% block content %}{% endblock %}
             </div>
-            
+
             <footer>
                 <center><p>Copyright © 2012 Jean-Baptiste EVIEUX</p></center>
             </footer>

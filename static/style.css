@@ -116,6 +116,16 @@ header h1{
     margin: auto;
 }
 
+#upload{
+    margin: auto;
+    padding: 15px;
+    display: table;
+}
+
+#upload input{
+    display: inline;
+}
+
 .error{
     background-color: #F888A5;
     border: 2px dotted red;
