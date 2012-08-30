@@ -8,10 +8,6 @@
         <h3>My account</h3>
     </center>
     <div id="div-accountform" class="shadow" >
-        {% if error %}
-            <div id="div-accounterror" class="error" >{{ error }}</div>
-        {% endif %}
-
         <form action="{{ url_for( 'show_account' ) }}" method="POST" >
             <dl>
                 <dt>Username:</dt>

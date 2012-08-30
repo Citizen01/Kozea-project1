@@ -6,9 +6,6 @@
 {% block content %}
 <h2>Upload a file</h2>
 <section id="upload" class="shadow" >
-    {% if error %}
-            <div id="div-uploaderror" class="error" >{{ error }}</div>
-    {% endif %}
     <form action="" method=post enctype=multipart/form-data>
         <input type=file name=file>
         <input type=submit value=Upload>
