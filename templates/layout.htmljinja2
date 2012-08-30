@@ -31,12 +31,32 @@
                 </ul>
             </nav>
         </header>
-            <div id="content">
-                {% block content %}{% endblock %}
-            </div>
+        <section id="flash-container">
+          {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+              <ul class="error" >
+                {% for message in errors %}
+                  <li class="flashes">{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+          {% with success = get_flashed_messages(category_filter=["success"]) %}
+            {% if success %}
+              <ul class="success" >
+                {% for message in success %}
+                  <li class="flashes">{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+        </section>
+        <section id="content">
+            {% block content %}{% endblock %}
+        </section>
 
-            <footer>
-                <center><p>Copyright © 2012 Jean-Baptiste EVIEUX</p></center>
-            </footer>
+        <footer>
+            <center><p>Copyright © 2012 Jean-Baptiste EVIEUX</p></center>
+        </footer>
     </body>
 </html>

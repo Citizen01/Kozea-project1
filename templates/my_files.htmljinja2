@@ -14,12 +14,27 @@
         <th>Date</th>
         <th>Actions</th>
       </thead>
+      {% with errors = get_flashed_messages(category_filter=["error-files"]) %}
+        {% if errors %}
+          <tr>
+            <th colspan="4">
+              <ul class="flashes">
+                {% for error in errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </th>
+          </tr>
+        {% endif %}
+      {% endwith %}
+
+
       {% for file in files %}
         <tr>
           <th>{{ file.title }}</th>
           <td>{{ file.size }}</td>
           <td>{{ file.pub_date }}</td>
-          <td><a href="{{url_for('download_file')}}" >Download</a>  <a href="" >Delete</a></td>
+          <td><a href="{{url_for('download_file',file_id=file.id)}}" >Download</a>  <a href="{{url_for('delete_file',file_id=file.id)}}" >Delete</a></td>
         </tr>
       {% endfor %}
     </table>

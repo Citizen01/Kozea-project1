@@ -1,6 +1,6 @@
 #index.py
 from flask import (Flask, request, session, g, redirect, url_for, abort,
-                   render_template, flash)
+                   render_template, flash, send_file, Response)
 from flask.ext.sqlalchemy import SQLAlchemy
 from functools import wraps
 import os
@@ -53,7 +53,7 @@ class File(db.Model):
     owner = db.relationship("User", backref=backref('files',
                                                     order_by=pub_date))
 
-    def __init__(self, title, type, ownerid, pub_date=None ):
+    def __init__(self, title, type, ownerid, pub_date=None):
         self.title = title
         self.type = type
         self.owner_id = ownerid
@@ -63,6 +63,10 @@ class File(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % self.title
+
+    def read(self, arg1):
+        db.session.add(self)
+        return self.data
 
     @hybrid_property
     def size(self):
@@ -89,7 +93,7 @@ def show_login():
             session['logged_in'] = True
             session['username'] = form_username
             session['id'] = member.id
-            flash('You were logged in')
+            flash('You were logged in', "success")
             return redirect(url_for('show_files'))
 
     return render_template('login.htmljinja2', error=error)
@@ -98,7 +102,7 @@ def show_login():
 @app.route('/logout')
 def do_logout():
     session.pop('logged_in', None)
-    flash('You were successfully logged out')
+    flash('You were successfully logged out', "success")
     return redirect(url_for('show_index'))
 
 
@@ -157,9 +161,10 @@ def show_files():
     db.session.add(user)
     files = user.files
 
-    if True:
+    if len(files) > 0:
         return render_template("my_files.htmljinja2", files=files)
     else:
+        flash("Your folder is empty !", "error-files" )
         return render_template("my_files.htmljinja2")
 
 
@@ -188,6 +193,7 @@ def allowed_file(filename):
 
 
 @app.route('/upload', methods=['GET', 'POST'])
+@need_auth
 def show_upload():
     error = None
     if request.method == 'POST':
@@ -200,24 +206,29 @@ def show_upload():
                 db.session.commit()
                 return redirect(url_for('show_files'))
             else:
-                error = "Invalid file type !"
-                return render_template('upload.htmljinja2', error=error)
+                flash("Invalid file type !", "error")
+                return render_template('upload.htmljinja2')
 
     return render_template('upload.htmljinja2')
 
+@app.route('/download/<int:file_id>')
+def download_file(file_id):
+    the_file = File.query.filter_by(id=file_id).first()
+    if the_file:
+        headers = {
+            'Content-Length': the_file.size,
+            'Content-Disposition': "attachment;filename=%s" % the_file.title}
+        return Response(
+            the_file.data, mimetype=the_file.type, headers=headers)
+    else:
+        flash("This file does not exist or had been deleted.", "error")
+        return redirect(url_for("show_files"))
 
-@app.route("/download")
-def download_file():
-        return render_template("download.htmljinja2")
 
 
 @app.route('/my_account', methods=['GET', 'POST'])
 @need_auth
 def show_account():
-    error = None
-    if not ('logged_in' in session):
-        return render_template('login.htmljinja2',
-                               error="You have to login first !")
     if request.method == 'POST':
         if not (request.form.get('password')
                 and request.form.get('newpassword')
@@ -233,15 +244,27 @@ def show_account():
             the_user = User.query\
                            .filter_by(username=session['username']).first()
             the_user.password = request.form.get('newpassword')
-
-            flash("Your profile has been updated !")
             db.session.commit()
-            return render_template('my_account.htmljinja2',
-                                   success="Your profile has been updated !")
+            flash("Your profile has been updated !", "success")
+            return render_template('my_account.htmljinja2')
 
         return render_template('my_account.htmljinja2', error=error)
 
     return render_template("my_account.htmljinja2")
+
+
+@app.route('/delete/<int:file_id>')
+@need_auth
+def delete_file(file_id):
+    the_user = User.query.filter_by(username=session['username']).first()
+    the_file = File.query.filter_by(id=file_id).first()
+
+    if the_file.owner_id == session['id']:
+        db.session.delete(the_file)
+        db.session.commit()
+        flash("The file has been deleted !", "success")
+
+    return redirect(url_for('show_files'))
 
 
 def get_password(username):
