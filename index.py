@@ -258,11 +258,11 @@ def show_account():
 def delete_file(file_id):
     the_user = User.query.filter_by(username=session['username']).first()
     the_file = File.query.filter_by(id=file_id).first()
-
-    if the_file.owner_id == session['id']:
-        db.session.delete(the_file)
-        db.session.commit()
-        flash("The file has been deleted !", "success")
+    if ( the_user and the_file ):
+        if the_file.owner_id == session['id']:
+            db.session.delete(the_file)
+            db.session.commit()
+            flash("The file has been deleted !", "success")
 
     return redirect(url_for('show_files'))
 
