@@ -10,21 +10,17 @@ from sqlalchemy.orm import deferred, relationship, backref, column_property
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql import func
 
+import config
+
 # configuration
-DEBUG = True
-SECRET_KEY = 'development key'
-DB_URL = "postgresql://kozupload@localhost/kozupload"
-UPLOAD_FOLDER = './uploads'
+
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip',
                           'tar', 'tar.gz'])
 
 # create our little application :)
 app = Flask(__name__)
-app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
+app.config.from_object('config')
+app.config.from_envvar('YOURAPPLICATION_SETTINGS', silent=True)
 db = SQLAlchemy(app)
 
 
@@ -149,6 +145,13 @@ def add_member(username, password):
     db.session.add(User(username, password))
     db.session.commit()
     return True
+
+def del_member(username):
+    if is_nick_taken(username):
+        db.session.delete(User.query.filter_by(username=username).first())
+        db.session.commit()
+    return True
+
 
 
 @app.route("/my_files")
