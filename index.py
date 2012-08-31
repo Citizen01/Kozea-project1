@@ -80,7 +80,7 @@ class File(db.Model):
 
 @app.route("/")
 def show_index():
-    return render_template("index.htmljinja2")
+    return render_template("index.html.jinja2")
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -97,7 +97,7 @@ def show_login():
             flash('You were logged in', "success")
             return redirect(url_for('show_files'))
 
-    return render_template('login.htmljinja2')
+    return render_template('login.html.jinja2')
 
 
 @app.route('/logout')
@@ -112,7 +112,7 @@ def need_auth(fun):
     def wrapped_fun(*args, **kwargs):
         if not ('logged_in' in session):
             flash("You have to login first !", "error")
-            return render_template('login.htmljinja2')
+            return render_template('login.html.jinja2')
         return fun(*args, **kwargs)
     return wrapped_fun
 
@@ -120,20 +120,25 @@ def need_auth(fun):
 @app.route('/register', methods=['GET', 'POST'])
 def show_register():
     if request.method == 'POST':
-        if not (request.form.get('username') and request.form.get('password')
-                and request.form.get('password2')):
-            flash("You have to fill the form first !", "error")
+        username = request.form.get('username')
+        password = request.form.get('password')
+        password2 = request.form.get('password2')
+        if not (username and password and password2):
+            flash("You have to fill the entire form first !", "error")
         elif (is_nick_taken(request.form.get('username'))):
             flash("This username is already taken !", "error")
         elif (request.form.get('password') != request.form.get('password2')):
             flash("The 2 passwords doesn't match !", "error")
         else:
+            add_member(username, password)
             session['logged_in'] = True
-            add_member(request.form.get('username'),
-                       request.form.get('password'))
-            return render_template('my_files.htmljinja2')
+            session['username'] = username
+            session['id'] = User.query.filter_by(username=username).first().id
+            flash('Welcome on Kozupload, %s !' % username, "success")
+            flash('You can use our services right now !', "success")
+            return redirect(url_for('show_files'))
 
-    return render_template('register.htmljinja2')
+    return render_template('register.html.jinja2')
 
 
 def is_nick_taken(username):
@@ -153,7 +158,7 @@ def show_files():
     if not user.files:
         flash("Your folder is empty !", "error-files")
 
-    return render_template("my_files.htmljinja2", files=user.files)
+    return render_template("my_files.html.jinja2", files=user.files)
 
 
 def size_to_human(num):
@@ -184,7 +189,7 @@ def show_upload():
             else:
                 flash("Invalid file type !", "error")
 
-    return render_template('upload.htmljinja2')
+    return render_template('upload.html.jinja2')
 
 
 @app.route('/download/<int:file_id>')
@@ -224,7 +229,7 @@ def show_account():
             db.session.commit()
             flash("Your profile has been updated !", "success")
 
-    return render_template("my_account.htmljinja2")
+    return render_template("my_account.html.jinja2")
 
 
 @app.route('/delete/<int:file_id>')
