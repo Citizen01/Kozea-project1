@@ -81,6 +81,8 @@ def show_index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def show_login():
+    if 'logged_in' in session:
+        return redirect(url_for('show_files'))
     if request.method == 'POST':
         form_username = request.form.get('username')
         member = User.query.filter_by(username=form_username).first()

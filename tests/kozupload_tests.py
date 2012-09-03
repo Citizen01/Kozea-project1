@@ -9,6 +9,8 @@ import tempfile
 from flask.ext.sqlalchemy import SQLAlchemy
 from functools import wraps
 from flask import session
+from StringIO import StringIO
+from re import search
 
 PATH = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, PATH)
@@ -24,7 +26,8 @@ def with_client(function):
     def wrapper(self, *args, **kwargs):
         """Decorator for the client login."""
         with index.app.test_client() as client:
-            client.post('login', data={'username': 'test_user', 'password': 'default'})
+            client.post('login', data={'username': 'test_user',
+                                        'password': 'default'})
             return function(self, client=client, *args, **kwargs)
     return wrapper
 
@@ -105,6 +108,63 @@ class KozuploadTestCase(unittest.TestCase):
         r = client.get('/logout')
         assert 'logged_in' not in session
 
+    @with_client
+    def test_upload(self, client):
+        """Test the upload, download and delete."""
+        #Upload
+        resp = client.post(
+            '/upload',
+            data = {
+                'file': (StringIO('my file contents'), 'hello world.txt'),
+            },
+            follow_redirects=True
+        )
+        assert 'hello world.txt' in resp.data
+        #Download
+        file_id = None
+        start, end = string_find(resp.data, "/delete/")
+        if start and end:
+            start2, end2 = string_find(resp.data, '"', end)
+            if start2 and end2:
+                file_id = string_sub(resp.data, end+1, start2-1)
+                print file_id
+        resp = client.get('/download/%s' % file_id)
+        assert '<Response streamed [200 OK]>' in str(resp)
+        #Delete
+        resp = client.get('/delete/%s' % file_id, follow_redirects=True)
+        assert 'The file has been deleted !' in resp.data
+
+
+
+def string_find(strg, what, offset=0):
+    lenght = len(strg)
+    for k in range(lenght):
+        if k >= offset:
+            found = True
+            for i in range(len(what)):
+                if not ( strg[k+i] == what[i] ):
+                    found= False
+                    break
+            if found:
+                return k, k+len(what)-1
+    return False, False
+
+
+def string_sub(strg, x, y=False):
+    if not x:
+        return False
+    start = x
+    end = y
+    lenght = len(strg)
+    if y == False or y > lenght:
+        end = lenght
+    s = ""
+    for index in range(lenght):
+        if index >= start and index <= end:
+            s += strg[index]
+        elif index > end:
+            break
+    return s
 
 
 
