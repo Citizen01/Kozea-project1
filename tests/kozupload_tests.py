@@ -11,12 +11,17 @@ from functools import wraps
 from flask import session
 from StringIO import StringIO
 from re import search
+from sqlalchemy import desc
+import psycopg2 as ppg
+from contextlib import closing
 
 PATH = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, PATH)
 
 TEST_USERNAME = "test_user"
 TEST_PASSWORD = "default"
+
+os.putenv('APP_SETTINGS', os.path.join(PATH, 'tests', 'config.py'))
 
 import index
 
@@ -35,13 +40,18 @@ def with_client(function):
 class KozuploadTestCase(unittest.TestCase):
 
     def setUp(self):
-        test_db_uri = "postgresql://kozupload@localhost/kozupload-test"
-        index.app.config['SQLALCHEMY_DATABASE_URI'] = test_db_uri
-        index.app.config['TESTING'] = True
         self.app = index.app.test_client()
+        self.reset_db()
 
-    def tearDown(self):
-        return "nothing"
+    def reset_db(self):
+        path = os.path.join(PATH, 'tests', 'sql', 'database.sql')
+        database = "dbname=kozupload-test user=kozupload password="
+        conn = ppg.connect(database)
+        cursor = conn.cursor()
+        with index.app.open_resource(path) as f:
+            #'psycopg2._psycopg.cursor' object has no attribute 'executescript'
+            cursor.executescript(f.read())
+        cursor.commit()
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
@@ -120,6 +130,12 @@ class KozuploadTestCase(unittest.TestCase):
             follow_redirects=True
         )
         assert 'hello world.txt' in resp.data
+        u_id = User.query.filter_by(owner_id=session['username']).first().id
+        print u_id
+        f = (File.query
+            .filter_by(owner_id=u_id)
+            .order_by(id.desc()).first())
+#        assert
         #Download
         file_id = None
         start, end = string_find(resp.data, "/delete/")
@@ -127,9 +143,10 @@ class KozuploadTestCase(unittest.TestCase):
             start2, end2 = string_find(resp.data, '"', end)
             if start2 and end2:
                 file_id = string_sub(resp.data, end+1, start2-1)
-                print file_id
         resp = client.get('/download/%s' % file_id)
         assert '<Response streamed [200 OK]>' in str(resp)
+        print resp.status_code
+        assert resp.status_code == 200
         #Delete
         resp = client.get('/delete/%s' % file_id, follow_redirects=True)
         assert 'The file has been deleted !' in resp.data

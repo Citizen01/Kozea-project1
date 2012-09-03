@@ -9,18 +9,19 @@ from datetime import datetime
 from sqlalchemy.orm import deferred, relationship, backref, column_property
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql import func
+from os.path import splitext
 
 import config
 
 # configuration
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip',
-                          'tar', 'tar.gz'])
+ALLOWED_EXTENSIONS = set(['.txt', '.pdf', '.iso', '.rar', '.psd', '.tiff', '.png', '.jpg', '.jpeg', '.gif', '.zip',
+                          '.tar', '.tar.gz'])
 
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object('config')
-app.config.from_envvar('YOURAPPLICATION_SETTINGS', silent=True)
+app.config.from_envvar('APP_SETTINGS', silent=True)
 db = SQLAlchemy(app)
 
 
@@ -175,8 +176,7 @@ def size_to_human(num):
 
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+    return splitext(filename)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route('/upload', methods=['GET', 'POST'])
