@@ -1,3 +1,6 @@
 cmds.txt
 *.pyc
 tests/*.pyc
+.noseids
+test.zip
+.coverage

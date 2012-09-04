@@ -15,8 +15,9 @@ import config
 
 # configuration
 
-ALLOWED_EXTENSIONS = set(['.txt', '.pdf', '.iso', '.rar', '.psd', '.tiff', '.png', '.jpg', '.jpeg', '.gif', '.zip',
-                          '.tar', '.tar.gz'])
+ALLOWED_EXTENSIONS = set(['.txt', '.pdf', '.iso', '.rar', '.psd', '.tiff',
+                          '.png', '.jpg', '.jpeg', '.gif', '.zip', '.tar',
+                          '.tar.gz'])
 
 # create our little application :)
 app = Flask(__name__)
@@ -34,9 +35,6 @@ class User(db.Model):
     def __init__(self, username, password):
         self.username = username
         self.password = password
-
-    def __repr__(self):
-        return '<User %r>' % self.username
 
 
 class File(db.Model):
@@ -59,20 +57,9 @@ class File(db.Model):
             pub_date = datetime.utcnow()
         self.pub_date = pub_date
 
-    def __repr__(self):
-        return '<Post %r>' % self.title
-
-    def read(self, arg1):
-        db.session.add(self)
-        return self.data
-
     @hybrid_property
     def size(self):
         return size_to_human(len(self.data))
-
-    @size.expression
-    def size(self):
-        return func.pg_size_pretty(func.octet_length(self.data))
 
 
 @app.route("/")
@@ -99,13 +86,6 @@ def show_login():
     return render_template('login.html.jinja2')
 
 
-@app.route('/logout')
-def do_logout():
-    session.pop('logged_in', None)
-    flash('You were successfully logged out', "success")
-    return redirect(url_for('show_index'))
-
-
 def need_auth(fun):
     @wraps(fun)
     def wrapped_fun(*args, **kwargs):
@@ -114,6 +94,14 @@ def need_auth(fun):
             return render_template('login.html.jinja2')
         return fun(*args, **kwargs)
     return wrapped_fun
+
+
+@app.route('/logout')
+@need_auth
+def do_logout():
+    session.pop('logged_in', None)
+    flash('You were successfully logged out', "success")
+    return redirect(url_for('show_index'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -148,13 +136,6 @@ def add_member(username, password):
     db.session.add(User(username, password))
     db.session.commit()
     return True
-
-def del_member(username):
-    if is_nick_taken(username):
-        db.session.delete(User.query.filter_by(username=username).first())
-        db.session.commit()
-    return True
-
 
 
 @app.route("/my_files")
@@ -193,7 +174,6 @@ def show_upload():
                 return redirect(url_for('show_files'))
             else:
                 flash("Invalid file type !", "error")
-
     return render_template('upload.html.jinja2')
 
 
@@ -233,7 +213,6 @@ def show_account():
             the_user.password = request.form.get('newpassword')
             db.session.commit()
             flash("Your profile has been updated !", "success")
-
     return render_template("my_account.html.jinja2")
 
 
@@ -254,5 +233,5 @@ def get_password(username):
     return User.query.filter_by(username=username).first().password
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     app.run(debug=True)
